@@ -13,19 +13,21 @@
 ```bash
 go run main.go
 ```
-1. 访问 http://localhost:8080/view/a.html 即可看到渲染后的结果
+5. 访问 http://localhost:8080/view/a.html 即可看到渲染后的结果
 
 ### 安装命令行方式使用
 1. 安装本工具
 ```bash
 # 从 gitee 安装
+go get gitee.com/tering/go-template-debuger
 go install gitee.com/tering/go-template-debuger
 
 # 或从 github 安装
+go get github.com/tering/go-template-debuger
 go install github.com/tering/go-template-debuger
 ```
 2. 在模板文件所在目录下执行命令： `go-template-debuger`
-3. 在模板文件所在目录下创建同名的 json 文件。例如： 模板文件为`a.email`, 则数据文件为`a.json`
+3. 在模板文件所在目录下创建同名的 json 文件。例如： 模板文件为`a.html`, 则数据文件为`a.json`
 4. 访问 http://localhost:8080/view/<模板文件名> 即可看到渲染后的结果
 
 ## 模板语法
