@@ -1,10 +1,9 @@
 package main
 
 import (
-	"fmt"
-	"html/template"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"
@@ -12,24 +11,21 @@ import (
 
 func main() {
 	r := gin.Default()
+	r.StaticFS("/static", http.Dir("./"))
 
 	// 访问根目录时，重定向到Gitee仓库地址
 	r.GET("/", func(c *gin.Context) {
-		c.Redirect(http.StatusSeeOther, "https://gitee.com/tering/go-template-debuger")
+		c.Redirect(http.StatusMovedPermanently, "/static")
 	})
 
-	r.GET("/:fileName", func(c *gin.Context) {
+	r.GET("view/:fileName", func(c *gin.Context) {
 		fileName := c.Param("fileName")
 
-		// 读取模板文件
-		t, err := template.ParseFiles(fmt.Sprintf("./template/%s.html", fileName))
-		if err != nil {
-			c.String(500, err.Error())
-			return
-		}
+		// 加载模板文件
+		r.LoadHTMLFiles(fileName)
 
 		// 读取需要传入模板的JSON数据
-		jsonData, err := os.ReadFile(fmt.Sprintf("./template/%s.json", fileName))
+		jsonData, err := os.ReadFile(fileName[:strings.LastIndex(fileName, ".")] + ".json")
 		if err != nil {
 			c.String(500, err.Error())
 			return
@@ -43,11 +39,8 @@ func main() {
 			return
 		}
 
-		// 将数据写入文件
-		err = t.Execute(c.Writer, data)
-		if err != nil {
-			c.String(500, err.Error())
-		}
+		// 响应模板文件
+		c.HTML(200, fileName, data)
 	})
 	r.Run()
 }
